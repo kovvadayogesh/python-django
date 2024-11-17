@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'website',
     'rest_framework',
+    'employees',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,55 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        # Custom format for console logs
+        'simple': {
+            'format': '{levelname: <7}-- {message}',  # For console logs with custom formatting
+            'style': '{',
+        },
+        # Formatter for file logging (includes timestamp for better tracking)
+        'detailed': {
+            'format': '{asctime} - {levelname} - {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        # Console Handler: Send DEBUG messages to the console
+        'console': {
+            'level': 'DEBUG',  # Only DEBUG and above levels are printed to the console
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',  # Using the simple formatter
+        },
+        # File Handler: Write logs to a file
+        'file': {
+            'level': 'ERROR',  # Only ERROR and above levels will be written to the log file
+            'class': 'logging.FileHandler',
+            'filename': 'app.log',  # Log file name
+            'formatter': 'detailed',  # Using the detailed formatter
+        },
+    },
+    'loggers': {
+        # Root logger configuration for both console and file logging
+        '': {
+            'handlers': ['console'],  # Attach console handler to the root logger
+            'level': 'DEBUG',  # Logs DEBUG level and above for console
+            'propagate': True,
+        },
+        # Logger for errors, API responses, and other critical logs
+        'django': {
+            'handlers': ['file'],  # Attach file handler for error logging
+            'level': 'ERROR',  # Capture ERROR and above levels
+            'propagate': False,
+        },
+        '__main__': {
+            'handlers': ['file'],  # Log file for the main logger
+            'level': 'ERROR',  # Capture ERROR and above levels
+            'propagate': False,
+        },
+    },
+}
